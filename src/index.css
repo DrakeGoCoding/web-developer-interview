@@ -3,3 +3,11 @@
 :root {
   font-family: 'Open Sans', sans-serif;
 }
+
+@theme {
+  --color-primary: rgba(28, 118, 213, 1);
+}
+
+@utility shadow-general {
+  box-shadow: 0 4px 8px 4px rgba(224, 228, 229, 0.35);
+}
