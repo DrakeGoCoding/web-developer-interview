@@ -1,3 +1,5 @@
+import { IHighlightItem } from '@/models';
+
 type HighlightItem = { text: string; highlight: boolean };
 
 /**
@@ -56,6 +58,63 @@ export const categorizeByHighlight = (
 
     // Move the current index past the keyword
     currentIndex = matchIndex + keyword.length;
+  }
+
+  return result;
+};
+
+/**
+ * Splits a given text into an array of objects, each containing a snippet of
+ * text and a boolean indicating whether that snippet should be highlighted,
+ * based on the given highlight offsets.
+ * @param {string} text - The text to be split.
+ * @param {IHighlightItem[]} highlights - An array of objects containing the
+ *   offsets of the text to be highlighted.
+ * @returns {HighlightItem[]} An array of text snippets with highlight information.
+ */
+export const categorizeHighlightInDocument = (
+  text: string,
+  highlights: IHighlightItem[]
+): HighlightItem[] => {
+  const result: HighlightItem[] = [];
+  let currentIndex = 0;
+
+  // Return an empty result if the input text is empty
+  if (!text.length) {
+    return result;
+  }
+
+  if (!highlights?.length) {
+    // If there are no highlights, return the whole text as non-highlighted
+    result.push({ text, highlight: false });
+    return result;
+  }
+
+  highlights.forEach(({ BeginOffset, EndOffset }) => {
+    if (currentIndex < BeginOffset) {
+      // Add the text before the highlight as non-highlighted
+      result.push({
+        text: text.slice(currentIndex, BeginOffset),
+        highlight: false,
+      });
+    }
+
+    // Add the highlighted text
+    result.push({
+      text: text.slice(BeginOffset, EndOffset),
+      highlight: true,
+    });
+
+    // Move the current index past the highlight
+    currentIndex = EndOffset;
+  });
+
+  if (currentIndex < text.length) {
+    // Add the text after the last highlight as non-highlighted
+    result.push({
+      text: text.slice(currentIndex),
+      highlight: false,
+    });
   }
 
   return result;

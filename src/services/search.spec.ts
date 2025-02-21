@@ -1,18 +1,21 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import type { SearchResultResponse } from '@/models';
+import mockQueryResult from '@/mocks/queryResult.json';
+import mockSuggestion from '@/mocks/suggestion.json';
 
 import { fetchSearchResults, fetchSearchSuggestions } from './search';
 
 describe('fetchSearchResults', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('should return an object with data and no error if successful', async () => {
-    vi.mock('fetch', () => {
-      return vi.fn(() => {
-        return Promise.resolve({
-          json: () => Promise.resolve({} as SearchResultResponse),
-        });
-      });
-    });
+    globalThis.fetch = vi.fn(() =>
+      Promise.resolve({
+        json: () => Promise.resolve(mockQueryResult),
+      } as Response)
+    );
 
     const query = 'test query';
     const response = await fetchSearchResults(query);
@@ -21,11 +24,12 @@ describe('fetchSearchResults', () => {
   });
 
   it('should return an object with error and no data if unsuccessful', async () => {
-    vi.mock('fetch', () => {
-      return vi.fn(() => {
-        return Promise.reject(new Error('Network error'));
-      });
-    });
+    globalThis.fetch = vi.fn(() =>
+      Promise.resolve({
+        json: () => Promise.reject(new Error('Network error')),
+      } as Response)
+    );
+
     const query = 'test query';
     const response = await fetchSearchResults(query);
     expect(response.error).toBeDefined();
@@ -34,14 +38,16 @@ describe('fetchSearchResults', () => {
 });
 
 describe('fetchSearchSuggestions', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('should return an object with data and no error if successful', async () => {
-    vi.mock('fetch', () => {
-      return vi.fn(() => {
-        return Promise.resolve({
-          json: () => Promise.resolve({} as SearchResultResponse),
-        });
-      });
-    });
+    globalThis.fetch = vi.fn(() =>
+      Promise.resolve({
+        json: () => Promise.resolve(mockSuggestion),
+      } as Response)
+    );
 
     const query = 'test query';
     const response = await fetchSearchSuggestions(query);
@@ -50,11 +56,12 @@ describe('fetchSearchSuggestions', () => {
   });
 
   it('should return an object with error and no data if unsuccessful', async () => {
-    vi.mock('fetch', () => {
-      return vi.fn(() => {
-        return Promise.reject(new Error('Network error'));
-      });
-    });
+    globalThis.fetch = vi.fn(() =>
+      Promise.resolve({
+        json: () => Promise.reject(new Error('Network error')),
+      } as Response)
+    );
+
     const query = 'test query';
     const response = await fetchSearchSuggestions(query);
     expect(response.error).toBeDefined();

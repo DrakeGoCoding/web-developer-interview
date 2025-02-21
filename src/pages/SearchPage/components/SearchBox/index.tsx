@@ -65,8 +65,10 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
         break;
 
       case 'ArrowUp':
-        setActiveSuggestionIndex(
-          (prev) => (prev - 1 + suggestions.length) % suggestions.length
+        setActiveSuggestionIndex((prev) =>
+          prev === -1
+            ? suggestions.length - 1
+            : (prev - 1 + suggestions.length) % suggestions.length
         );
         break;
 
@@ -76,11 +78,11 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
   };
 
   const handleClearInput = () => {
-    inputRef.current?.focus();
-    handleCloseDropdown();
     if (inputRef.current) {
       inputRef.current.value = '';
     }
+    inputRef.current?.focus();
+    handleCloseDropdown();
   };
 
   const handleSelectSuggestion = (suggestion: string) => {
@@ -117,6 +119,7 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
         <input
           ref={inputRef}
           className="w-full h-full rounded-lg focus:outline-none focus:ring-0 pl-6 pr-17"
+          autoFocus
           onChange={handleInputChange}
           onKeyDown={handleInputKeydown}
           onFocus={() => setIsDropdownOpen(true)}
@@ -137,6 +140,8 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
                   key={suggestion}
                   data-active={activeSuggestionIndex === index}
                   className="py-2 px-6 hover:bg-[#F0F0F0] cursor-default data-[active=true]:bg-[#F0F0F0]"
+                  onMouseEnter={() => setActiveSuggestionIndex(index)}
+                  onClick={() => handleSelectSuggestion(suggestion)}
                 >
                   <Highlight highlight={getInputValue()}>
                     {suggestion}
@@ -148,7 +153,7 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
         )}
       </div>
       <button
-        className="bg-primary text-white text-lg flex flex-row items-center justify-center gap-1.5 rounded-lg px-8 py-4 cursor-pointer"
+        className="bg-primary text-white text-lg flex flex-row items-center justify-center gap-1.5 rounded-lg px-8 py-4 cursor-pointer translate-x-[1px]"
         onClick={handleSubmit}
       >
         <SearchIcon />

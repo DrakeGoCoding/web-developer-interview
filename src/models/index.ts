@@ -1,29 +1,30 @@
-export type SearchSuggestionResponse = {
+export interface ISearchSuggestionResponse {
   stemmedQueryTerm: string;
   suggestions: string[];
-};
+}
 
-export type SearchResultResponse = {
+export interface ISearchResultResponse {
   TotalNumberOfResults: number;
   Page: number;
   PageSize: number;
-  ResultItems: SearchResultItem[];
-};
+  ResultItems: ISearchResultItem[];
+}
 
-export type SearchResultItem = {
+export interface ISearchResultItem {
   DocumentId: string;
   DocumentTitle: {
     Text: string;
-    Highlights: HighlightItem[];
+    Highlights: IHighlightItem[];
   };
   DocumentExcerpt: {
     Text: string;
-    Highlights: HighlightItem[];
+    Highlights: IHighlightItem[];
   };
   DocumentURI: string;
-};
+  Type?: string;
+}
 
-export type HighlightItem = {
+export interface IHighlightItem {
   BeginOffset: number;
   EndOffset: number;
-};
+}

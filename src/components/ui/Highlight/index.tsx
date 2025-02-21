@@ -1,17 +1,25 @@
-import { categorizeByHighlight } from '@/utils/highlight';
+import { IHighlightItem } from '@/models';
+import {
+  categorizeByHighlight,
+  categorizeHighlightInDocument,
+} from '@/utils/highlight';
 import { useMemo } from 'react';
 
 interface HighlightProps {
-  highlight: string;
+  highlight: string | IHighlightItem[];
   children: string;
 }
 
 const Highlight = ({ highlight, children }: HighlightProps) => {
-  const parts = useMemo(
-    () =>
-      categorizeByHighlight(children.toLowerCase(), highlight.toLowerCase()),
-    [children, highlight]
-  );
+  const parts = useMemo(() => {
+    if (typeof highlight === 'string') {
+      return categorizeByHighlight(
+        children.toLowerCase(),
+        highlight.toLowerCase()
+      );
+    }
+    return categorizeHighlightInDocument(children.toLowerCase(), highlight);
+  }, [children, highlight]);
 
   return (
     <p>

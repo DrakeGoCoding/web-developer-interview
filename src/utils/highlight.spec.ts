@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { categorizeByHighlight } from './highlight';
+import type { IHighlightItem } from '@/models';
+
+import {
+  categorizeByHighlight,
+  categorizeHighlightInDocument,
+} from './highlight';
 
 describe('categorizeByHighlight', () => {
   it('should return an empty array for empty text', () => {
@@ -44,5 +49,47 @@ describe('categorizeByHighlight', () => {
   it('should highlight the single character keyword when found', () => {
     const result = categorizeByHighlight('a', 'a');
     expect(result).toEqual([{ text: 'a', highlight: true }]);
+  });
+});
+
+describe('categorizeHighlightInDocument', () => {
+  it('should return the whole text as non-highlighted when there are no highlights', () => {
+    const text = 'Hello World';
+    const highlights: IHighlightItem[] = [];
+    const result = categorizeHighlightInDocument(text, highlights);
+    expect(result).toEqual([{ text, highlight: false }]);
+  });
+
+  it('should return an empty array when the text is empty', () => {
+    const text = '';
+    const highlights: IHighlightItem[] = [];
+    const result = categorizeHighlightInDocument(text, highlights);
+    expect(result).toEqual([]);
+  });
+
+  it('should highlight a single highlight', () => {
+    const text = 'Hello World';
+    const highlights: IHighlightItem[] = [{ BeginOffset: 6, EndOffset: 11 }];
+    const result = categorizeHighlightInDocument(text, highlights);
+    expect(result).toEqual([
+      { text: 'Hello ', highlight: false },
+      { text: 'World', highlight: true },
+    ]);
+  });
+
+  it('should highlight multiple highlights', () => {
+    const text = 'Hello World Foo Bar';
+    const highlights: IHighlightItem[] = [
+      { BeginOffset: 6, EndOffset: 11 },
+      { BeginOffset: 15, EndOffset: 18 },
+    ];
+    const result = categorizeHighlightInDocument(text, highlights);
+    expect(result).toEqual([
+      { text: 'Hello ', highlight: false },
+      { text: 'World', highlight: true },
+      { text: ' Foo', highlight: false },
+      { text: ' Ba', highlight: true },
+      { text: 'r', highlight: false },
+    ]);
   });
 });
