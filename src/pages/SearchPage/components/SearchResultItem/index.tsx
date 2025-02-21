@@ -7,7 +7,10 @@ interface SearchResultItemProps {
 
 const SearchResultItem = ({ data }: SearchResultItemProps) => {
   return (
-    <div className="flex flex-col gap-3">
+    <div
+      data-testid={`search-result-item-${data.DocumentId}`}
+      className="flex flex-col gap-3"
+    >
       <a
         className="font-semibold text-primary text-[22px] hover:underline visited:text-purple-600"
         href={data.DocumentURI}

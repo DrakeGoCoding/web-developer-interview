@@ -13,27 +13,33 @@ export const categorizeByHighlight = (
   text: string,
   keyword: string
 ): HighlightItem[] => {
+  const normalizedText = text.toLowerCase();
+  const normalizedKeyword = keyword.toLowerCase();
+
   const result: HighlightItem[] = [];
   let currentIndex = 0;
 
   // Return an empty result if the input text is empty
-  if (!text.length) {
+  if (!normalizedText.length) {
     return result;
   }
 
   // If keyword is empty or not found in text, return the whole text as non-highlighted
-  if (!keyword.length || !text.includes(keyword)) {
+  if (
+    !normalizedKeyword.length ||
+    !normalizedText.includes(normalizedKeyword)
+  ) {
     result.push({ text, highlight: false });
     return result;
   }
 
   // Iterate through the text to find occurrences of the keyword
-  while (currentIndex < text.length) {
-    const matchIndex = text.indexOf(keyword, currentIndex);
+  while (currentIndex < normalizedText.length) {
+    const matchIndex = normalizedText.indexOf(normalizedKeyword, currentIndex);
 
     // If no more matches are found, add the remaining text as non-highlighted
     if (matchIndex === -1) {
-      if (currentIndex < text.length) {
+      if (currentIndex < normalizedText.length) {
         result.push({
           text: text.slice(currentIndex),
           highlight: false,
@@ -52,12 +58,12 @@ export const categorizeByHighlight = (
 
     // Add the keyword itself as highlighted
     result.push({
-      text: text.slice(matchIndex, matchIndex + keyword.length),
+      text: text.slice(matchIndex, matchIndex + normalizedKeyword.length),
       highlight: true,
     });
 
     // Move the current index past the keyword
-    currentIndex = matchIndex + keyword.length;
+    currentIndex = matchIndex + normalizedKeyword.length;
   }
 
   return result;

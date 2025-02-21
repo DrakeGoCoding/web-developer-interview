@@ -1,4 +1,5 @@
 import type { ISearchResultItem } from '@/models';
+
 import SearchResultItem from '../SearchResultItem';
 
 interface SearchResultsProps {

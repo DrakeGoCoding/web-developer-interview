@@ -5,6 +5,8 @@ export default mergeConfig(
   viteConfig,
   defineConfig({
     test: {
+      globals: true,
+      environment: 'jsdom',
       browser: {
         enabled: true,
         provider: 'playwright',

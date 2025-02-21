@@ -77,7 +77,8 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
     }
   };
 
-  const handleClearInput = () => {
+  const handleClearInput = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (inputRef.current) {
       inputRef.current.value = '';
     }
@@ -112,12 +113,14 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
   return (
     <div
       ref={containerRef}
+      data-testid="search-box"
       data-dropdown-open={shouldShowDropdown}
       className="flex flex-row border-[#A4A4A4] border rounded-lg focus-within:border-primary data-[dropdown-open=true]:rounded-bl-none"
     >
       <div className="flex-grow relative">
         <input
           ref={inputRef}
+          data-testid="search-input"
           className="w-full h-full rounded-lg focus:outline-none focus:ring-0 pl-6 pr-17"
           autoFocus
           onChange={handleInputChange}
@@ -126,6 +129,7 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
         />
         {getInputValue().length > 0 && (
           <button
+            data-testid="search-clear-button"
             className="absolute top-[50%] right-4 -translate-y-[50%] text-[#616161] cursor-pointer hover:bg-[#F0F0F0] rounded-xl"
             onClick={handleClearInput}
           >
@@ -133,11 +137,15 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
           </button>
         )}
         {shouldShowDropdown && (
-          <div className="absolute w-full rounded-b-lg shadow-general bg-white top-[calc(100%+1px)]">
+          <div
+            data-testid="search-suggestions"
+            className="absolute w-full rounded-b-lg shadow-general bg-white top-[calc(100%+1px)]"
+          >
             <div className="flex flex-col py-2">
               {suggestions.map((suggestion, index) => (
                 <div
                   key={suggestion}
+                  data-testid={`search-suggestion-${index}`}
                   data-active={activeSuggestionIndex === index}
                   className="py-2 px-6 hover:bg-[#F0F0F0] cursor-default data-[active=true]:bg-[#F0F0F0]"
                   onMouseEnter={() => setActiveSuggestionIndex(index)}
@@ -153,6 +161,7 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
         )}
       </div>
       <button
+        data-testid="search-button"
         className="bg-primary text-white text-lg flex flex-row items-center justify-center gap-1.5 rounded-lg px-8 py-4 cursor-pointer translate-x-[1px]"
         onClick={handleSubmit}
       >

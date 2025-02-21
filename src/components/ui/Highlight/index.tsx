@@ -13,12 +13,9 @@ interface HighlightProps {
 const Highlight = ({ highlight, children }: HighlightProps) => {
   const parts = useMemo(() => {
     if (typeof highlight === 'string') {
-      return categorizeByHighlight(
-        children.toLowerCase(),
-        highlight.toLowerCase()
-      );
+      return categorizeByHighlight(children, highlight);
     }
-    return categorizeHighlightInDocument(children.toLowerCase(), highlight);
+    return categorizeHighlightInDocument(children, highlight);
   }, [children, highlight]);
 
   return (
