@@ -10,7 +10,8 @@
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css}\"",
     "preview": "vite preview",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "pretest": "playwright install"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.7",

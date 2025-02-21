@@ -1,8 +1,19 @@
+import { fetchSearchResults } from '@/services/search';
 import SearchBox from './components/SearchBox';
+import { useState } from 'react';
+import { SearchResultResponse } from '@/models';
 
 const SearchPage = () => {
-  const handleSearch = (text: string) => {
-    console.log(text);
+  const [query, setQuery] = useState('');
+  const [data, setData] = useState<SearchResultResponse | null>(null);
+  const [error, setError] = useState<unknown>(null);
+
+  const handleSearch = async (query: string) => {
+    const res = await fetchSearchResults(query);
+
+    setQuery(query);
+    setData(res.data);
+    setError(res.error);
   };
 
   return (
