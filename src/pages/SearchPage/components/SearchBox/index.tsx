@@ -4,7 +4,6 @@ import { CrossIcon, SearchIcon } from '@/components/icons';
 import Highlight from '@/components/ui/Highlight';
 import { useDebounceCallback } from '@/hooks/useDebounceCallback';
 import { useOnClickOutside } from '@/hooks/useOnClickOutside';
-import mockSuggestions from '@/mocks/suggestion.json';
 import { fetchSearchSuggestions } from '@/services/search';
 
 interface SearchBoxProps {
@@ -15,7 +14,7 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [suggestions, setSuggestions] = useState(mockSuggestions.suggestions);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -111,7 +110,7 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
   return (
     <div
       ref={containerRef}
-      data-dropdown-open={isDropdownOpen}
+      data-dropdown-open={shouldShowDropdown}
       className="flex flex-row border-[#A4A4A4] border rounded-lg focus-within:border-primary data-[dropdown-open=true]:rounded-bl-none"
     >
       <div className="flex-grow relative">
