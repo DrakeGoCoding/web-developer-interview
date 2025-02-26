@@ -5,9 +5,9 @@ function App() {
   return (
     <>
       <AppBanner />
-      <div className="">
+      <main className="">
         <SearchPage />
-      </div>
+      </main>
     </>
   );
 }

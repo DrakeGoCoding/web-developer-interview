@@ -1,4 +1,6 @@
 import type {
+  IHighlightItem,
+  ISearchResultItem,
   ISearchResultResponse,
   ISearchSuggestionResponse,
 } from '@/models';
@@ -32,6 +34,27 @@ export const fetchSearchResults = async (query: string) => {
 };
 
 /**
+ * Returns an array of all start indices of the given substring in the given
+ * string.
+ *
+ * @param {string} str The string to search in.
+ * @param {string} substr The substring to search for.
+ * @returns {number[]} An array of indices of the given substring in the given
+ * string.
+ */
+const getAllSubstringIndexes = (str: string, substr: string) => {
+  const indices: number[] = [];
+  let index = str.indexOf(substr);
+
+  while (index !== -1) {
+    indices.push(index);
+    index = str.indexOf(substr, index + 1);
+  }
+
+  return indices;
+};
+
+/**
  * Filter search results to only include items whose document title contains
  * the query string. Updates the total number of results to reflect the
  * filtered items count.
@@ -44,16 +67,50 @@ const filterSearchResults = (
   data: ISearchResultResponse,
   query: string
 ): ISearchResultResponse => {
-  data.ResultItems = data.ResultItems.filter(
-    (resultItem) =>
-      resultItem.DocumentTitle.Text.toLowerCase().includes(
-        query.toLowerCase()
-      ) ||
-      resultItem.DocumentExcerpt.Text.toLowerCase().includes(
-        query.toLowerCase()
-      )
-  );
-  data.TotalNumberOfResults = data.ResultItems.length;
+  const normalizedQuery = query.toLowerCase();
+  const queryLength = query.length;
+  const listResultItem: ISearchResultItem[] = [];
+
+  const indexToHighlight = (index: number) => ({
+    BeginOffset: index,
+    EndOffset: index + queryLength,
+  });
+
+  for (const resultItem of data.ResultItems) {
+    const normalizedTitle = resultItem.DocumentTitle.Text.toLowerCase();
+    const normalizedExcerpt = resultItem.DocumentExcerpt.Text.toLowerCase();
+
+    const titleIndices = getAllSubstringIndexes(
+      normalizedTitle,
+      normalizedQuery
+    );
+    const excerptIndices = getAllSubstringIndexes(
+      normalizedExcerpt,
+      normalizedQuery
+    );
+
+    const titleHighlights: IHighlightItem[] =
+      titleIndices.map(indexToHighlight);
+    const excerptHighlights: IHighlightItem[] =
+      excerptIndices.map(indexToHighlight);
+
+    if (titleHighlights.length > 0 || excerptHighlights.length > 0) {
+      listResultItem.push({
+        ...resultItem,
+        DocumentTitle: {
+          ...resultItem.DocumentTitle,
+          Highlights: titleHighlights,
+        },
+        DocumentExcerpt: {
+          ...resultItem.DocumentExcerpt,
+          Highlights: excerptHighlights,
+        },
+      });
+    }
+  }
+
+  data.ResultItems = listResultItem;
+  data.TotalNumberOfResults = listResultItem.length;
 
   return data;
 };

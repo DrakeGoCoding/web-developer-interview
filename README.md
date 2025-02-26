@@ -9,7 +9,7 @@ This project, 'Searching Website', is a web application designed to provide sear
 - [Libraries](#libraries)
 - [Installation](#installation)
   - [Run the App](#run-the-app)
-  - [Run Tests](#run-tests)
+  - [Tests and Coverage](#tests-and-coverage)
 
 # Approach
 
@@ -25,6 +25,7 @@ In this project, since the API endpoints return static responses, all filtering 
 - Tailwindcss: A utility-first CSS framework for rapidly building custom user interfaces.
 - Vite: A build tool for modern web development.
 - Vitest: A testing framework for JavaScript and TypeScript.
+- Lodash.debounce: A utility function for debouncing functions.
 
 # Installation
 
@@ -60,8 +61,21 @@ yarn lint
 yarn format
 ```
 
-## Run Tests
+## Tests and Coverage
 
 ```bash
 yarn test
+yarn coverage
 ```
+
+## Screenshots
+
+User Story 1: As a user, I want to see results displayed when I search in the search bar
+![user-stories-1.1](public/user-stories-1.1.png)
+![user-stories-1.2](public/user-stories-1.2.png)
+
+User Story 2: As a user, I want to see suggestions in the search bar
+![user-stories-2](public/user-stories-2.png)
+
+Test Coverage
+![coverage](public/coverage.png)

@@ -26,7 +26,7 @@ const SearchBox = ({ onSearch }: SearchBoxProps) => {
     const { data, error } = await fetchSearchSuggestions(value);
 
     if (error) {
-      console.log(error);
+      console.error(error);
     }
 
     if (data) {
